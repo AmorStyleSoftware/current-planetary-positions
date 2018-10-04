@@ -15,23 +15,39 @@ class cpp_widget extends WP_Widget {
 		);
 	}
 
-	public function isa_get_sign_position($longitude) {
+	public function isa_get_sign_position($longitude,$show_short_names) {
 
 		$sym = array('aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces');
 		
-		$localize_signs = array(
-			__( 'Aries', 'current-planetary-positions' ),
-			__( 'Taurus', 'current-planetary-positions' ),
-			__( 'Gemini', 'current-planetary-positions' ),
-			__( 'Cancer', 'current-planetary-positions' ),
-			__( 'Leo', 'current-planetary-positions' ),
-			__( 'Virgo', 'current-planetary-positions' ),
-			__( 'Libra', 'current-planetary-positions' ),
-			__( 'Scorpio', 'current-planetary-positions' ),
-			__( 'Sagittarius', 'current-planetary-positions' ),
-			__( 'Capricorn', 'current-planetary-positions' ),
-			__( 'Aquarius', 'current-planetary-positions'),
-			__( 'Pisces', 'current-planetary-positions') );
+		if( $show_short_names ) {
+			$localize_signs = array(
+				__( 'Ari', 'current-planetary-positions' ),
+				__( 'Tau', 'current-planetary-positions' ),
+				__( 'Gem', 'current-planetary-positions' ),
+				__( 'Cnc', 'current-planetary-positions' ),
+				__( 'Leo', 'current-planetary-positions' ),
+				__( 'Vir', 'current-planetary-positions' ),
+				__( 'Lib', 'current-planetary-positions' ),
+				__( 'Sco', 'current-planetary-positions' ),
+				__( 'Sgr', 'current-planetary-positions' ),
+				__( 'Cap', 'current-planetary-positions' ),
+				__( 'Aqr', 'current-planetary-positions'),
+				__( 'Psc', 'current-planetary-positions') );
+		} else {
+			$localize_signs = array(
+				__( 'Aries', 'current-planetary-positions' ),
+				__( 'Taurus', 'current-planetary-positions' ),
+				__( 'Gemini', 'current-planetary-positions' ),
+				__( 'Cancer', 'current-planetary-positions' ),
+				__( 'Leo', 'current-planetary-positions' ),
+				__( 'Virgo', 'current-planetary-positions' ),
+				__( 'Libra', 'current-planetary-positions' ),
+				__( 'Scorpio', 'current-planetary-positions' ),
+				__( 'Sagittarius', 'current-planetary-positions' ),
+				__( 'Capricorn', 'current-planetary-positions' ),
+				__( 'Aquarius', 'current-planetary-positions'),
+				__( 'Pisces', 'current-planetary-positions') );
+		}
 
 		foreach ( $sym as $key => $val ) {
 			$symbol[$key] = '<span id="currentplanets_sprite" class="' . $val . '"></span> '. $localize_signs[$key];
@@ -120,14 +136,23 @@ class cpp_widget extends WP_Widget {
 		if( is_rtl() ) $degree =  "&deg;$localized_deg";
 		else $degree =  "$localized_deg&deg;";
 
-		$set_out = sprintf( __( '%s %s %s%s %s%s', 'current-planetary-positions' ), 
-						$degree,
-						$symbol[$sign_num],
-						$localized_min,
-						chr(39),
-						$localized_full_sec,
-						chr(34)
-						);
+		if( $show_short_names ) {
+			$set_out = sprintf( __( '%s %s %s%s', 'current-planetary-positions' ),
+							$degree,
+							$symbol[$sign_num],
+							$localized_min,
+							chr(39)
+							);
+		} else {
+			$set_out = sprintf( __( '%s %s %s%s %s%s', 'current-planetary-positions' ),
+							$degree,
+							$symbol[$sign_num],
+							$localized_min,
+							chr(39),
+							$localized_full_sec,
+							chr(34)
+							);
+		}
 
 		return $set_out;
 
@@ -143,6 +168,7 @@ class cpp_widget extends WP_Widget {
 
 		$title = apply_filters( 'widget_title', empty( $instance['title'] ) ? __( 'Current Planetary Positions', 'current-planetary-positions' ) : $instance['title'], $instance, $this->id_base );
 		$show_utc_time = empty($instance['show_utc_time']) ? false : 'on';
+		$show_short_names = empty($instance['show_short_names']) ? false : 'on';
 		
 		echo $args['before_widget'];
 		if ( $title ) {
@@ -181,21 +207,40 @@ class cpp_widget extends WP_Widget {
 			$longitude[$key] = $row[1]; // longitude decimal
 			$speed[$key] = $row[2]; // speed
 		}
-		// localize planet names
-		$pl_name = array(
-			__( 'Sun', 'current-planetary-positions' ),
-			__( 'Moon', 'current-planetary-positions' ),
-			__( 'Mercury', 'current-planetary-positions' ),
-			__( 'Venus', 'current-planetary-positions' ),
-			__( 'Mars', 'current-planetary-positions' ),
-			__( 'Jupiter', 'current-planetary-positions' ),
-			__( 'Saturn', 'current-planetary-positions' ),
-			__( 'Uranus', 'current-planetary-positions' ),
-			__( 'Neptune', 'current-planetary-positions' ),
-			__( 'Pluto', 'current-planetary-positions' ),
-			__( 'Chiron', 'current-planetary-positions'),
-			__( 'TrueNode', 'current-planetary-positions')
-			);
+
+		if( $show_short_names ) {
+			// localize planet names
+			$pl_name = array(
+				__( 'Sun', 'current-planetary-positions' ),
+				__( 'Moon', 'current-planetary-positions' ),
+				__( 'Merc', 'current-planetary-positions' ),
+				__( 'Ven', 'current-planetary-positions' ),
+				__( 'Mars', 'current-planetary-positions' ),
+				__( 'Jup', 'current-planetary-positions' ),
+				__( 'Sat', 'current-planetary-positions' ),
+				__( 'Ura', 'current-planetary-positions' ),
+				__( 'Nep', 'current-planetary-positions' ),
+				__( 'Plu', 'current-planetary-positions' ),
+				__( 'Chir', 'current-planetary-positions'),
+				__( 'TN', 'current-planetary-positions')
+				);
+		} else {
+			// localize planet names
+			$pl_name = array(
+				__( 'Sun', 'current-planetary-positions' ),
+				__( 'Moon', 'current-planetary-positions' ),
+				__( 'Mercury', 'current-planetary-positions' ),
+				__( 'Venus', 'current-planetary-positions' ),
+				__( 'Mars', 'current-planetary-positions' ),
+				__( 'Jupiter', 'current-planetary-positions' ),
+				__( 'Saturn', 'current-planetary-positions' ),
+				__( 'Uranus', 'current-planetary-positions' ),
+				__( 'Neptune', 'current-planetary-positions' ),
+				__( 'Pluto', 'current-planetary-positions' ),
+				__( 'Chiron', 'current-planetary-positions'),
+				__( 'TrueNode', 'current-planetary-positions')
+				);
+		}
 
 		?>
 		<div id="current-planets">
@@ -219,7 +264,7 @@ class cpp_widget extends WP_Widget {
 
 		for ($i = 0; $i <= $num_planets - 1; $i++) {
 
-			$position = $this->isa_get_sign_position( $longitude[ $i ] );
+			$position = $this->isa_get_sign_position( $longitude[ $i ],$show_short_names );
 
 			echo '<tr><td>' . $pl_name[$i] . '&nbsp;</td><td>';
 			echo wp_kses_post( $position );
@@ -239,6 +284,7 @@ class cpp_widget extends WP_Widget {
 		$instance = array();
 		$instance['title'] = strip_tags( $new_instance['title'] );
 		$instance['show_utc_time'] = empty($new_instance['show_utc_time']) ? false : 'on';
+		$instance['show_short_names'] = empty($new_instance['show_short_names']) ? false : 'on';
 		return $instance;
 	}
 
@@ -248,7 +294,8 @@ class cpp_widget extends WP_Widget {
 	public function form( $instance ) {
 		$defaults = array( 
 			'title' => __('Current Planetary Positions', 'current-planetary-positions'),
-			'show_utc_time' => false
+			'show_utc_time' => false,
+			'show_short_names' => false
 			);
  		$instance = wp_parse_args( (array) $instance, $defaults );
     	?>
@@ -260,6 +307,7 @@ class cpp_widget extends WP_Widget {
 				name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $instance['title']; ?>" />
 		</p>
 		<p><input id="<?php echo $this->get_field_id( 'show_utc_time' ); ?>" name="<?php echo $this->get_field_name( 'show_utc_time' ); ?>" type="checkbox" class="checkbox" <?php checked( $instance['show_utc_time'], 'on' ); ?> /><label for="<?php echo $this->get_field_id( 'show_utc_time' ); ?>"><?php _e( ' Show UT/GMT time instead of viewer\'s local time.', 'current-planetary-positions' ); ?></label></p>
+		<p><input id="<?php echo $this->get_field_id( 'show_short_names' ); ?>" name="<?php echo $this->get_field_name( 'show_short_names' ); ?>" type="checkbox" class="checkbox" <?php checked( $instance['show_short_names'], 'on' ); ?> /><label for="<?php echo $this->get_field_id( 'show_short_names' ); ?>"><?php _e( ' Show short names & drop seconds.', 'current-planetary-positions' ); ?></label></p>
 		<?php 
 	}
 }
